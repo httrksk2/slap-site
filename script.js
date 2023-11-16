@@ -45,7 +45,7 @@ function startTypingSession() {
         sessionCounts[sessionCount].cheated = true;
     });
 
-    countdown(10, endTypingSession);
+    countdown(60, endTypingSession);
 }
 
 function endTypingSession() {
@@ -82,7 +82,7 @@ function updateSessionRecords() {
 
 function strategyTime() {
     document.getElementById('strategyTime').innerHTML = "90 sec strategy time for the team.<br>The next session will start as soon as the countdown reaches zero.";
-    countdown(10, startTypingSession);
+    countdown(90, startTypingSession);
 }
 
 function displayFinalRecord() {
