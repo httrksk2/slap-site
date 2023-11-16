@@ -1,5 +1,5 @@
 let sessionCount = 0;
-let sessionCounts = [{ slaps: 0, chars: 0, cheated: false }, { slaps: 0, chars: 0, cheated: false }, { slaps: 0, chars: 0, cheated: false }];
+let sessionCounts = [{ slaps: 0, chars: 0 }, { slaps: 0, chars: 0 }, { slaps: 0, chars: 0 }];
 
 document.getElementById('startButton').addEventListener('click', function() {
     this.style.display = 'none';
@@ -31,51 +31,35 @@ function countdown(duration, callback) {
 }
 
 function startTypingSession() {
-    sessionCounts[sessionCount].cheated = false;
-    document.getElementById('textInput').disabled = false;
-    document.getElementById('textInput').value = '';
-    document.getElementById('textInput').focus();
-
-    document.getElementById('textInput').addEventListener('copy', function(e) {
-        sessionCounts[sessionCount].cheated = true;
-    });
-    document.getElementById('textInput').addEventListener('paste', function(e) {
-        sessionCounts[sessionCount].cheated = true;
-    });
-
-    countdown(60, endTypingSession); //time limit for text input
+    document.getElementById('result').innerText = '';
+    sessionCount++;
+    document.getElementById('strategyTime').innerText = '';
+    const textInput = document.getElementById('textInput');
+    textInput.disabled = false;
+    textInput.value = '';
+    textInput.focus();
+    countdown(60, endTypingSession);
 }
 
 function endTypingSession() {
-    document.getElementById('textInput').disabled = true;
-    updateResult();
-    updateSessionRecords();
+    const textInput = document.getElementById('textInput');
+    textInput.disabled = true;
+    showResult();
 
-    if (sessionCount < 2) {
+    if (sessionCount < 3) {
         strategyTime();
     } else {
         displayFinalRecord();
     }
-
-    sessionCount++;
 }
 
-function updateResult() {
+function showResult() {
     const text = document.getElementById('textInput').value.toUpperCase();
     const slapCount = (text.match(/SLAP/g) || []).length;
     const charCount = text.length;
-    sessionCounts[sessionCount] = { slaps: slapCount, chars: charCount, cheated: sessionCounts[sessionCount].cheated };
+    sessionCounts[sessionCount - 1] = { slaps: slapCount, chars: charCount };
     document.getElementById('result').innerText = `Number of SLAPs: ${slapCount}`;
-}
-
-function updateSessionRecords() {
-    let recordText = 'Session Records:<br>';
-    sessionCounts.forEach((count, index) => {
-        let sessionLabel = count.cheated ? `Session ${index + 1}*: ` : `Session ${index + 1}: `;
-        let record = `${sessionLabel}Number of SLAPs: ${count.slaps} (Total Characters: ${count.chars})`;
-        recordText += `${record};<br>`;
-    });
-    document.getElementById('record').innerHTML = recordText;
+    updateSessionRecords();
 }
 
 function strategyTime() {
@@ -83,7 +67,20 @@ function strategyTime() {
     countdown(90, startTypingSession);
 }
 
+
+
+function updateSessionRecords() {
+    let recordText = 'Session Records: \n';
+    sessionCounts.forEach((count, index) => {
+        recordText += `Session ${index + 1}: ${count.slaps} SLAPs (Total Characters: ${count.chars}); \n`;
+    });
+    document.getElementById('record').innerText = recordText;
+}
+
 function displayFinalRecord() {
     updateSessionRecords();
     document.getElementById('strategyTime').innerText = "The task is now complete. Thank you.";
 }
+
+
+//Slap ver 0.2 2023.11.16 Keisuke Hattori
