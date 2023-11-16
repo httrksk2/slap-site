@@ -1,7 +1,8 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: white;
+    background-color: #FDFDFD;
+    color: #404040;
 }
 
 #container {
@@ -11,20 +12,36 @@ body {
 
 textarea {
     width: 100%;
-    height: 200px; /* Changed from 100px to 200px */
+    height: 200px;
     font-size: 20pt;
+    background-color: #FFFFFF;
+    color: #404040;
+    text-transform: uppercase;
 }
 
 #countdown, #result, #strategyTime {
-    font-size: 2em;
+    font-size: 2.4em;
     margin-top: 10px;
+    color: #404040;
+    line-height: 1.2;
 }
 
 #record {
     margin-top: 20px;
     font-size: 1.5em;
+    color: #404040;
+    line-height: 1.2;
 }
-/* ... 他のスタイル ... */
+
+#pageTitle {
+    text-align: center;
+    font-size: 1.5em;
+}
+
+#strategyTime {
+    font-size: 1.92em;
+    line-height: 1.2;
+}
 
 #copyright {
     font-size: 0.8em;
@@ -33,7 +50,7 @@ textarea {
     margin-top: 30px;
 }
 
-#pageTitle {
-    text-align: center;
-    font-size: 1.5em; /* H2サイズに近いサイズ */
+#textInput {
+    text-transform: uppercase; /* テキストボックスの入力を大文字に変換 */
 }
+

@@ -1,17 +1,17 @@
 let sessionCount = 0;
-let slapCounts = [null, null, null]; // 初期値をnullに設定して、「-」で表示する
+let sessionCounts = [{ slaps: 0, chars: 0, cheated: false }, { slaps: 0, chars: 0, cheated: false }, { slaps: 0, chars: 0, cheated: false }];
 
 document.getElementById('startButton').addEventListener('click', function() {
-    this.style.display = 'none'; // Startボタンを非表示にする
-    startFirstSession();
+    this.style.display = 'none';
+    startSession();
 });
 
-function startFirstSession() {
-    countdown(3, startTypingSession);
-}
-
 function startSession() {
-    startTypingSession();
+    if (sessionCount < 3) {
+        countdown(3, startTypingSession);
+    } else {
+        displayFinalRecord();
+    }
 }
 
 function countdown(duration, callback) {
@@ -22,7 +22,6 @@ function countdown(duration, callback) {
     const timer = setInterval(() => {
         timeLeft--;
         countdownElement.innerText = timeLeft;
-
         if (timeLeft <= 0) {
             clearInterval(timer);
             countdownElement.innerText = '';
@@ -32,60 +31,59 @@ function countdown(duration, callback) {
 }
 
 function startTypingSession() {
-    if (sessionCount < 3) {
-        document.getElementById('result').innerText = ''; // 前回の「Number of SLAP」の結果を消去
-        sessionCount++;
-        document.getElementById('strategyTime').innerText = ''; // Strategy timeのテキストを消去
-        const textInput = document.getElementById('textInput');
-        textInput.disabled = false;
-        textInput.value = '';
-        textInput.focus();
-        countdown(60, endTypingSession);
-        updateSessionRecords(); // セッションの記録を更新
-    } else {
-        displayFinalRecord();
-    }
+    sessionCounts[sessionCount].cheated = false;
+    document.getElementById('textInput').disabled = false;
+    document.getElementById('textInput').value = '';
+    document.getElementById('textInput').focus();
+
+    document.getElementById('textInput').addEventListener('copy', function(e) {
+        sessionCounts[sessionCount].cheated = true;
+    });
+    document.getElementById('textInput').addEventListener('paste', function(e) {
+        sessionCounts[sessionCount].cheated = true;
+    });
+
+    countdown(60, endTypingSession); //time limit for text input
 }
 
 function endTypingSession() {
-    const textInput = document.getElementById('textInput');
-    textInput.disabled = true;
-    showResult();
+    document.getElementById('textInput').disabled = true;
+    updateResult();
+    updateSessionRecords();
 
-    if (sessionCount < 3) {
+    if (sessionCount < 2) {
         strategyTime();
     } else {
-        displayCompletionText();
+        displayFinalRecord();
     }
+
+    sessionCount++;
 }
 
-function showResult() {
+function updateResult() {
     const text = document.getElementById('textInput').value.toUpperCase();
     const slapCount = (text.match(/SLAP/g) || []).length;
-    slapCounts[sessionCount - 1] = slapCount;
-    document.getElementById('result').innerText = `Number of SLAP: ${slapCount}`;
-    updateSessionRecords(); // セッションの記録を更新
-}
-
-function strategyTime() {
-    if (sessionCount < 3) {
-        document.getElementById('strategyTime').innerText = "Strategy time for 2 minutes. The next session will automatically start after 2 minutes.";
-        countdown(120, startSession);
-    }
+    const charCount = text.length;
+    sessionCounts[sessionCount] = { slaps: slapCount, chars: charCount, cheated: sessionCounts[sessionCount].cheated };
+    document.getElementById('result').innerText = `Number of SLAPs: ${slapCount}`;
 }
 
 function updateSessionRecords() {
-    let recordText = 'Session Records: ';
-    slapCounts.forEach((count, index) => {
-        recordText += `Session ${index + 1}: ${count !== null ? count + ' SLAPs' : '-'}; `;
+    let recordText = 'Session Records:<br>';
+    sessionCounts.forEach((count, index) => {
+        let sessionLabel = count.cheated ? `Session ${index + 1}*: ` : `Session ${index + 1}: `;
+        let record = `${sessionLabel}Number of SLAPs: ${count.slaps} (Total Characters: ${count.chars})`;
+        recordText += `${record};<br>`;
     });
-    document.getElementById('record').innerText = recordText;
+    document.getElementById('record').innerHTML = recordText;
 }
 
-function displayCompletionText() {
-    document.getElementById('strategyTime').innerText = "The task is now complete. Thank you.";
+function strategyTime() {
+    document.getElementById('strategyTime').innerHTML = "90 sec strategy time for the team.<br>The next session will start as soon as the countdown reaches zero.";
+    countdown(90, startTypingSession);
 }
 
 function displayFinalRecord() {
-    updateSessionRecords(); // 最終記録を表示
+    updateSessionRecords();
+    document.getElementById('strategyTime').innerText = "The task is now complete. Thank you.";
 }
