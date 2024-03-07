@@ -31,8 +31,9 @@ function countdown(duration, callback) {
 }
 
 function startTypingSession() {
-    document.getElementById('strategyTime').innerText = ''; // 戦略タイムのメッセージをクリア
-    document.getElementById('result').innerText = ''; // 前回の記録をクリア
+	document.getElementById('sessionNumber').innerText = `Session ${sessionCount + 1}`;
+	document.getElementById('strategyTime').innerText = ''; 
+    document.getElementById('result').innerText = ''; 
     sessionCounts[sessionCount].cheated = false;
     document.getElementById('textInput').disabled = false;
     document.getElementById('textInput').value = '';
@@ -44,12 +45,19 @@ function startTypingSession() {
     document.getElementById('textInput').addEventListener('paste', function(e) {
         sessionCounts[sessionCount].cheated = true;
     });
-
+	
+	document.getElementById('textInput').addEventListener('keydown', function(event) {
+        if (event.key === 'Backspace' || event.key === 'Delete') {
+            event.preventDefault();
+        }
+	});
+	
     countdown(60, endTypingSession);
 }
 
 function endTypingSession() {
-    document.getElementById('textInput').disabled = true;
+	document.getElementById('sessionNumber').innerText = `セッション ${sessionCount + 1}`;
+	document.getElementById('textInput').disabled = true;
     updateResult();
     updateSessionRecords();
 
@@ -87,6 +95,6 @@ function strategyTime() {
 
 function displayFinalRecord() {
     updateSessionRecords();
-    document.getElementById('strategyTime').innerText = "SLAPタスクはこれで終了です。画面をそのままにお待ちください。ありがとうございました。";
+    document.getElementById('strategyTime').innerHTML = "SLAPタスクはこれで終了です。画面をそのままにお待ちください。<br>ありがとうございました。";
 }
 

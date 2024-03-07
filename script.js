@@ -31,8 +31,9 @@ function countdown(duration, callback) {
 }
 
 function startTypingSession() {
-    document.getElementById('strategyTime').innerText = ''; // 戦略タイムのメッセージをクリア
-    document.getElementById('result').innerText = ''; // 前回の記録をクリア
+	document.getElementById('sessionNumber').innerText = `Session ${sessionCount + 1}`;
+    document.getElementById('strategyTime').innerText = ''; 
+    document.getElementById('result').innerText = ''; 
     sessionCounts[sessionCount].cheated = false;
     document.getElementById('textInput').disabled = false;
     document.getElementById('textInput').value = '';
@@ -45,10 +46,17 @@ function startTypingSession() {
         sessionCounts[sessionCount].cheated = true;
     });
 
+    document.getElementById('textInput').addEventListener('keydown', function(event) {
+        if (event.key === 'Backspace' || event.key === 'Delete') {
+            event.preventDefault();
+        }
+    });
+
     countdown(60, endTypingSession);
 }
 
 function endTypingSession() {
+	document.getElementById('sessionNumber').innerText = `Session ${sessionCount + 1}`;
     document.getElementById('textInput').disabled = true;
     updateResult();
     updateSessionRecords();
@@ -79,14 +87,14 @@ function updateSessionRecords() {
     document.getElementById('record').innerHTML = recordText;
 }
 
-
 function strategyTime() {
     document.getElementById('strategyTime').innerHTML = "90 sec strategy time for the team.<br>The next session will start as soon as the countdown reaches zero.";
     countdown(90, startTypingSession);
 }
 
+
 function displayFinalRecord() {
     updateSessionRecords();
-    document.getElementById('strategyTime').innerText = "The task is now complete. Thank you.";
+    document.getElementById('strategyTime').innerHTML = "The task is now complete.<br>Thank you.";
 }
 
