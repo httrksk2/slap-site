@@ -31,7 +31,7 @@ function countdown(duration, callback) {
 }
 
 function startTypingSession() {
-	document.getElementById('sessionNumber').innerText = `Session ${sessionCount + 1}`;
+	document.getElementById('sessionNumber').innerText = `セッション ${sessionCount + 1}`;
 	document.getElementById('strategyTime').innerText = ''; 
     document.getElementById('result').innerText = ''; 
     sessionCounts[sessionCount].cheated = false;
