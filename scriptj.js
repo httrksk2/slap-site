@@ -64,7 +64,7 @@ function startTypingSession() {
         }
     });
 
-    countdown(10, endTypingSession);  //タスク入力時間！
+    countdown(60, endTypingSession);  //タスク入力時間！
 }
 
 function endTypingSession() {
@@ -102,7 +102,7 @@ function updateSessionRecords() {
 
 function strategyTime() {
     document.getElementById('strategyTime').innerHTML = "90秒間の作戦タイムです。<br>次のセッションはカウントダウンが0になると同時に開始されます。";
-    countdown(3, startTypingSession);   //作戦時間！
+    countdown(90, startTypingSession);   //作戦時間！
 }
 
 
