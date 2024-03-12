@@ -16,6 +16,10 @@ body {
   margin: 10px 0;
 }
 
+#startButton {
+  display: block;
+  margin: 0 auto;
+}
 
 textarea {
     width: 100%;

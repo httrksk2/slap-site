@@ -6,17 +6,26 @@
 </head>
 <body>
     <div id="container">
-        <h2 id="pageTitle">SLAP task</h2>
+        <h2 id="pageTitle">SLAP task (TEST ver)</h2>
             <div id="sessionNumber"></div>
         <textarea id="textInput" disabled></textarea>
-        <button id="startButton">Start</button>
+        <button id="startButton" onclick="startGame()" style="display: none;">Start</button>
         <div id="countdown"></div>
         <div id="result"></div>
         <div id="strategyTime"></div>
         <div id="record"></div>
+            <!-- ID入力用のフィールドとボタンを追加 -->
+<div>
+  <input type="text" id="userId1" placeholder="Enter ID for User 1">
+  <input type="text" id="userId2" placeholder="Enter ID for User 2">
+  <button onclick="confirmId()">Confirm IDs</button>
+</div>
+
+
+
     </div>
     <div id="copyright">
-        &copy; Keisuke Hattori, 2023
+        &copy; Keisuke Hattori, 2024
     </div>
     <script src="script.js"></script>
 </body>

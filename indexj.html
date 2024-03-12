@@ -1,22 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SLAPタスク ver. 0.2</title>
+    <title>SLAPタスク</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
     <div id="container">
-        <h2 id="pageTitle">SLAPタスク</h2>
+        <h2 id="pageTitle">SLAPタスク（ベータ）</h2>
             <div id="sessionNumber"></div>
         <textarea id="textInput" disabled></textarea>
-        <button id="startButton">開始</button>
+        <button id="startButton" onclick="startGame()" style="display: none;">タスク開始</button>
         <div id="countdown"></div>
         <div id="result"></div>
         <div id="strategyTime"></div>
         <div id="record"></div>
+            
+<div>
+  <input type="text" id="userId1" placeholder="ユーザー1のIDをここに">
+  <input type="text" id="userId2" placeholder="ユーザー2のIDをここに">
+  <button onclick="confirmId()">ID入力後クリック</button>
+</div>
+
+
+
     </div>
     <div id="copyright">
-        &copy; Keisuke Hattori, 2023
+        &copy; Keisuke Hattori, 2024
     </div>
     <script src="scriptj.js"></script>
 </body>
