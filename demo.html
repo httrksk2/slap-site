@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SLAP Task</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div id="container">
+        <h2 id="pageTitle">SLAP task</h2>
+        <div id="gameRules">Game Rules
+            <span id="rulesTooltip">
+                <!-- The text of the rules will be dynamically updated by JavaScript -->
+            </span>
+        </div>
+        <div id="sessionNumber"></div>
+        <textarea id="textInput" disabled></textarea>
+        <button id="startButton" style="display: none;">Start</button>
+        <div id="countdown"></div>
+        <div id="result"></div>
+        <div id="strategyTime"></div>
+        <div id="record"></div>
+        
+        <div>
+            <input type="text" id="userId1" placeholder="Enter ID for User 1">
+            <input type="text" id="userId2" placeholder="Enter ID for User 2">
+            <button onclick="confirmId()">Confirm ID</button>
+        </div>
+    </div>
+    <div id="copyright">
+        &copy; Keisuke Hattori, 2024
+    </div>
+    <script src="demo.js"></script>
+</body>
+</html>
