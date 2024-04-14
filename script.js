@@ -1,5 +1,10 @@
+// Global settings
+let penaltyThreshold = 5; // Penalty threshold for mistypes
+let typingDuration = 60; // Duration of input session in seconds
+let strategyDuration = 90; // Strategy time in seconds
+
 let sessionCount = 0;
-let sessionCounts = [{ slaps: 0, chars: 0, cheated: false }, { slaps: 0, chars: 0, cheated: false }, { slaps: 0, chars: 0, cheated: false }];
+let sessionCounts = [{ slaps: 0, chars: 0, cheated: false, score: 0 }, { slaps: 0, chars: 0, cheated: false, score: 0 }, { slaps: 0, chars: 0, cheated: false, score: 0 }];
 
 let userId1, userId2;
 
@@ -11,7 +16,6 @@ function confirmId() {
   document.querySelector('button[onclick="confirmId()"]').style.display = 'none';
   document.getElementById('startButton').style.display = 'block';
 }
-
 
 document.getElementById('startButton').addEventListener('click', function() {
     this.style.display = 'none';
@@ -43,9 +47,9 @@ function countdown(duration, callback) {
 }
 
 function startTypingSession() {
-	document.getElementById('sessionNumber').innerText = `Session ${sessionCount + 1}`;
-    document.getElementById('strategyTime').innerText = ''; 
-    document.getElementById('result').innerText = ''; 
+    document.getElementById('sessionNumber').innerText = `Session ${sessionCount + 1}`;
+    document.getElementById('strategyTime').innerText = '';
+    document.getElementById('result').innerText = '';
     sessionCounts[sessionCount].cheated = false;
     document.getElementById('textInput').disabled = false;
     document.getElementById('textInput').value = '';
@@ -64,11 +68,10 @@ function startTypingSession() {
         }
     });
 
-    countdown(60, endTypingSession);  //タスク入力時間！
+    countdown(typingDuration, endTypingSession);
 }
 
 function endTypingSession() {
-	document.getElementById('sessionNumber').innerText = `Session ${sessionCount + 1}`;
     document.getElementById('textInput').disabled = true;
     updateResult();
     updateSessionRecords();
@@ -85,53 +88,63 @@ function updateResult() {
     const text = document.getElementById('textInput').value.toUpperCase();
     const slapCount = (text.match(/SLAP/g) || []).length;
     const charCount = text.length;
-    sessionCounts[sessionCount] = { slaps: slapCount, chars: charCount, cheated: sessionCounts[sessionCount].cheated };
-    document.getElementById('result').innerText = `Number of SLAPs: ${slapCount}`;
+    let mistypedCount = charCount - (slapCount * 4);
+    let penalty = Math.floor(mistypedCount / penaltyThreshold);
+    let score = slapCount - penalty;
+    sessionCounts[sessionCount] = { slaps: slapCount, chars: charCount, cheated: sessionCounts[sessionCount].cheated, score: score };
+
+    document.getElementById('result').innerText = `This session's score: ${score}`;
 }
+
 
 function updateSessionRecords() {
     let recordText = `Session Records (ID: ${userId1} and ${userId2}):<br>`;
-    sessionCounts.forEach((count, index) => {
-        let sessionLabel = count.cheated ? `Session ${index + 1}*: ` : `Session ${index + 1}: `;
-        let record = `${sessionLabel}Number of SLAPs: ${count.slaps} (Total Characters: ${count.chars})`;
-        recordText += `${record}<br>`;
-    });
+    for (let i = 0; i <= sessionCount; i++) {
+        let count = sessionCounts[i];
+        let sessionLabel = count.cheated ? `Session ${i + 1}*: ` : `Session ${i + 1}: `;
+        let mistypedCount = count.chars - (count.slaps * 4);
+        let record = `${sessionLabel}SLAPs typed ${count.slaps}; Mistypes ${mistypedCount}; Score ${count.score};<br>`;
+        recordText += record;
+    }
     document.getElementById('record').innerHTML = recordText;
 }
 
 
-function strategyTime() {
-    document.getElementById('strategyTime').innerHTML = "90 sec strategy time for the team.<br>The next session will start as soon as the countdown reaches zero.";
-    countdown(90, startTypingSession);   //作戦時間！
-}
 
+function strategyTime() {
+    document.getElementById('strategyTime').innerHTML = `${strategyDuration} sec strategy time for the team.<br>The next session will start as soon as the countdown reaches zero.`;
+    countdown(strategyDuration, startTypingSession);
+}
 
 function displayFinalRecord() {
     updateSessionRecords();
-	document.getElementById('strategyTime').innerHTML = "The task is now complete.<br>Thank you.";
-	sendGameData();
+    document.getElementById('strategyTime').innerHTML = "The SLAP task is now complete. Please keep the screen as it is.<br>Thank you.";
+    sendGameData();
 }
 
 function sendGameData() {
   const data = {
     id1: userId1,
     id2: userId2,
-    score1: sessionCounts[0].slaps,
+    slap1: sessionCounts[0].slaps,
     tc1: sessionCounts[0].chars,
-    score2: sessionCounts[1].slaps,
+    score1: sessionCounts[0].score,
+    slap2: sessionCounts[1].slaps,
     tc2: sessionCounts[1].chars,
-    score3: sessionCounts[2].slaps,
+    score2: sessionCounts[1].score,
+    slap3: sessionCounts[2].slaps,
     tc3: sessionCounts[2].chars,
+    score3: sessionCounts[2].score,
     cheated1: sessionCounts[0].cheated ? 1 : 0,
     cheated2: sessionCounts[1].cheated ? 1 : 0,
     cheated3: sessionCounts[2].cheated ? 1 : 0,
   };
 
   // ランダムな遅延を設定（0秒から10秒）
-  const delay = Math.random() * 10000; // 10000ms = 10s
+  const delay = Math.random() * 5000;
 
   setTimeout(() => {
-    fetch('https://script.google.com/macros/s/AKfycbylQAqUCfzLpt_1Glnql4npDNVUXHv6GNtq3UeHqXmiaup6YWzCy0bMcLCzLdWPr92C/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbwxxXBIPdTMWauw22onm0-9M_j2R7HiyiQjTyamROOb-HVwFqGzgaJSbc5tFJvbEHhZpg/exec', {
       method: 'POST',
       mode: 'no-cors',
       cache: 'no-cache',
@@ -149,10 +162,38 @@ function sendGameData() {
 }
 
 
+function updateGameRules() {
+    let penaltyText = penaltyThreshold > 0 ? `However, a penalty of 1 point is deducted for every ${penaltyThreshold} mistypes.` : '';
+    let rulesText = `Game Rules Detail:<br>
+    1. Two people share the typing tasks, collaborating to type 'SLAP' as many times as possible within each ${typingDuration}-second session.<br>
+    2. The number of times 'SLAP' is entered will be your score (points).${penaltyText}<br>
+    3. There are 3 sessions in total, with a ${strategyDuration}-second strategy time between each session.`;
+
+    document.getElementById('rulesTooltip').innerHTML = rulesText;
+}
+
+document.getElementById('gameRules').addEventListener('mouseover', function() {
+    document.getElementById('rulesTooltip').style.visibility = 'visible';
+});
+
+document.getElementById('gameRules').addEventListener('mouseout', function() {
+    document.getElementById('rulesTooltip').style.visibility = 'hidden';
+});
 
 
 
+
+// ページ読み込み時と設定が変更されたときにルールを更新
 window.onload = function() {
+    updateGameRules();
     document.querySelector('button[onclick="confirmId()"]').addEventListener('click', confirmId);
 };
+
+
+
+
+
+
+
+
 

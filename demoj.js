@@ -1,7 +1,7 @@
 // グローバル設定
 let penaltyThreshold = 5; // ミスタイプのペナルティ閾値
-let typingDuration = 60; // 入力セッションの秒数
-let strategyDuration = 90; // 作戦タイムの秒数
+let typingDuration = 10; // 入力セッションの秒数
+let strategyDuration = 15; // 作戦タイムの秒数
 
 let sessionCount = 0;
 let sessionCounts = [{ slaps: 0, chars: 0, cheated: false, score: 0 }, { slaps: 0, chars: 0, cheated: false, score: 0 }, { slaps: 0, chars: 0, cheated: false, score: 0 }];
