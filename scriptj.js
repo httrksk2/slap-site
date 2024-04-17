@@ -8,14 +8,28 @@ let sessionCounts = [{ slaps: 0, chars: 0, cheated: false, score: 0 }, { slaps: 
 
 let userId1, userId2;
 
+
+
 function confirmId() {
   userId1 = document.getElementById('userId1').value;
   userId2 = document.getElementById('userId2').value;
-  document.getElementById('userId1').style.display = 'none';
-  document.getElementById('userId2').style.display = 'none';
-  document.querySelector('button[onclick="confirmId()"]').style.display = 'none';
-  document.getElementById('startButton').style.display = 'block';
+  const fullWidthPattern = /[^\x00-\x7F]+/; // 全角文字が含まれているかチェックする正規表現
+
+  if (userId1.trim() === '' || userId2.trim() === '') {
+    alert('IDを入力してください。');
+  } else if (fullWidthPattern.test(userId1) || fullWidthPattern.test(userId2)) {
+    alert('IDは半角英数字で入力してください。');
+  } else {
+    document.getElementById('userId1').style.display = 'none';
+    document.getElementById('userId2').style.display = 'none';
+    document.getElementById('confirmIdButton').style.display = 'none';
+    document.getElementById('startButton').style.display = 'block';
+  }
 }
+
+
+
+
 
 document.getElementById('startButton').addEventListener('click', function() {
     this.style.display = 'none';
@@ -183,10 +197,9 @@ document.getElementById('gameRules').addEventListener('mouseout', function() {
 
 
 
-// ページ読み込み時と設定が変更されたときにルールを更新
 window.onload = function() {
     updateGameRules();
-    document.querySelector('button[onclick="confirmId()"]').addEventListener('click', confirmId);
+    document.getElementById('confirmIdButton').addEventListener('click', confirmId);
 };
 
 

@@ -3,6 +3,11 @@ let penaltyThreshold = 5; // Penalty threshold for mistypes
 let typingDuration = 10; // Duration of input session in seconds
 let strategyDuration = 15; // Strategy time in seconds
 
+
+//
+//
+
+
 let sessionCount = 0;
 let sessionCounts = [{ slaps: 0, chars: 0, cheated: false, score: 0 }, { slaps: 0, chars: 0, cheated: false, score: 0 }, { slaps: 0, chars: 0, cheated: false, score: 0 }];
 
@@ -11,11 +16,25 @@ let userId1, userId2;
 function confirmId() {
   userId1 = document.getElementById('userId1').value;
   userId2 = document.getElementById('userId2').value;
-  document.getElementById('userId1').style.display = 'none';
-  document.getElementById('userId2').style.display = 'none';
-  document.querySelector('button[onclick="confirmId()"]').style.display = 'none';
-  document.getElementById('startButton').style.display = 'block';
+  const fullWidthPattern = /[^\x00-\x7F]+/;
+
+  if (userId1.trim() === '' || userId2.trim() === '') {
+    alert('Please enter your ID.');
+  } else if (fullWidthPattern.test(userId1) || fullWidthPattern.test(userId2)) {
+    alert('Please enter your ID using alphanumeric characters only.');
+  } else {
+    document.getElementById('userId1').style.display = 'none';
+    document.getElementById('userId2').style.display = 'none';
+    document.getElementById('confirmIdButton').style.display = 'none';
+    document.getElementById('startButton').style.display = 'block';
+  }
 }
+
+
+
+
+
+
 
 document.getElementById('startButton').addEventListener('click', function() {
     this.style.display = 'none';
@@ -183,10 +202,9 @@ document.getElementById('gameRules').addEventListener('mouseout', function() {
 
 
 
-// ページ読み込み時と設定が変更されたときにルールを更新
 window.onload = function() {
     updateGameRules();
-    document.querySelector('button[onclick="confirmId()"]').addEventListener('click', confirmId);
+    document.getElementById('confirmIdButton').addEventListener('click', confirmId);
 };
 
 
